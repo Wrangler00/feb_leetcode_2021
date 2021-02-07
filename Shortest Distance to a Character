@@ -1,0 +1,62 @@
+Given a string s and a character c that occurs in s, return an array of integers answer where answer.length == s.length and answer[i] is the shortest distance from s[i] to the character c in s.
+
+ 
+
+Example 1:
+
+Input: s = "loveleetcode", c = "e"
+Output: [3,2,1,0,1,0,0,1,2,2,1,0]
+Example 2:
+
+Input: s = "aaab", c = "b"
+Output: [3,2,1,0]
+ 
+
+Constraints:
+
+1 <= s.length <= 104
+s[i] and c are lowercase English letters.
+c occurs at least once in s.
+
+//cpp my solution
+
+class Solution {
+    vector<int> mp;
+public:
+    int bins(int i){
+        int l=0,r=mp.size()-1,mid;
+        int ind=-1;
+        
+        while(l<=r){
+            mid = (l+r)/2;
+            if(mp[mid]<i){
+                ind=mid;
+                l = mid+1; 
+            }else
+                r = mid-1;
+        }
+        
+        return ind==-1?l:ind;
+    }
+    vector<int> shortestToChar(string s, char c) {
+        vector<int> ans((int)s.length());
+        
+        for(int i=0;i<s.length();i++)
+            if(s[i]==c) mp.push_back(i);
+        
+        for(int i=0;i<s.length();i++){
+            if(s[i]==c) ans[i]=0;
+            else{
+                int ind = bins(i);
+                int minn = abs(i-mp[ind]);
+                
+                if(ind!=mp.size()-1)
+                    minn = min(minn,abs(mp[ind+1]-i));
+                
+                ans[i]=minn;
+            }
+        }
+        
+        return ans;
+    }
+};
